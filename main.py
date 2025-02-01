@@ -22,9 +22,6 @@ class Note:
         return f"{self.title}:\n\t{self.text}\n\n{self.time_stamp}"
     
 
-
-
-
 class DBManager:
     def __init__(self, db, note=None):
         self.conn = sqlite3.connect(db)
@@ -46,13 +43,6 @@ class DBManager:
         self.c.execute(f"SELECT * FROM Notes")
         return self.c.fetchall()
     
-
-
-
-# n1 = Note(1,'Barca for the UCL', 'Finished second in the leauge phase...')
-# n1.save()
-# DBManager('notes_db').remove(1)
-
 
 for i in DBManager('notes_db').get():
     print(i)
