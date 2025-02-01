@@ -6,7 +6,7 @@ class Note:
         self.title = title
         self.text = text
         self.time_stamp = strftime("%H:%M:%S %Y-%m-%d", gmtime())
-        DBManager('notes_db').add(self)
+        DBManager('notes_db', self).add()
 
     def edit_title(self, title):
         self.title = title
@@ -25,16 +25,16 @@ class Note:
 
 
 class DBManager:
-    def __init__(self, db):
+    def __init__(self, db, note):
         self.conn = sqlite3.connect(db)
         self.c = self.conn.cursor()
-        
-    def add(self, note):
-        title = note.title
-        text = note.text
-        time = note.time_stamp
+        self.title = note.title
+        self.text = note.text
+        self.time = note.time_stamp
+
+    def add(self):
         with self.conn:
-            self.c.execute(f"INSERT INTO Notes VALUES ('{title}', '{text}', '{time}')")
+            self.c.execute(f"INSERT INTO Notes VALUES ('{self.title}', '{self.text}', '{self.time}')")
 
     def remove(self):
         pass
@@ -45,7 +45,7 @@ class DBManager:
     def get(self):
         pass
 
-# Note('Barca vs Alaves Preditions', 'Barca got the chance to close down on madrid if they win')
+# Note('Barca for the UCL', 'Finished second in the leauge phase...')
 conn = sqlite3.connect('notes_db')
 c = conn.cursor()
 c.execute(f"SELECT * FROM Notes")
