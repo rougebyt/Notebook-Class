@@ -2,10 +2,13 @@ from time import gmtime, strftime
 import sqlite3
 
 class Note:
-    def __init__(self, title, text):
+    def __init__(self, id, title, text):
+        self.id = id
         self.title = title
         self.text = text
         self.time_stamp = strftime("%H:%M:%S %Y-%m-%d", gmtime())
+        
+    def save(self):
         DBManager('notes_db', self).add()
 
     def edit_title(self, title):
@@ -15,39 +18,41 @@ class Note:
         self.text = text
 
 
-
     def __str__(self):
         return f"{self.title}:\n\t{self.text}\n\n{self.time_stamp}"
     
-#notes
-#title text time
+
 
 
 
 class DBManager:
-    def __init__(self, db, note):
+    def __init__(self, db, note=None):
         self.conn = sqlite3.connect(db)
         self.c = self.conn.cursor()
-        self.title = note.title
-        self.text = note.text
-        self.time = note.time_stamp
-
+        self.note = note
+      
     def add(self):
         with self.conn:
-            self.c.execute(f"INSERT INTO Notes VALUES ('{self.title}', '{self.text}', '{self.time}')")
+            self.c.execute(f"INSERT INTO Notes VALUES ({self.note.id},'{self.note.title}', '{self.note.text}', '{self.note.time_stamp}')")
 
-    def remove(self):
-        pass
+    def remove(self,id):
+        with self.conn:
+            self.c.execute(f"DELETE FROM Notes WHERE id='{id}'")
 
     def edit(self):
         pass
 
     def get(self):
-        pass
+        self.c.execute(f"SELECT * FROM Notes")
+        return self.c.fetchall()
+    
 
-# Note('Barca for the UCL', 'Finished second in the leauge phase...')
-conn = sqlite3.connect('notes_db')
-c = conn.cursor()
-c.execute(f"SELECT * FROM Notes")
-for headline in c.fetchall():
-    print(headline)
+
+
+# n1 = Note(1,'Barca for the UCL', 'Finished second in the leauge phase...')
+# n1.save()
+# DBManager('notes_db').remove(1)
+
+
+for i in DBManager('notes_db').get():
+    print(i)
