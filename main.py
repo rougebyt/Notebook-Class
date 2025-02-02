@@ -23,18 +23,21 @@ class Note:
     
 
 class DBManager:
-    def __init__(self, db, note=None):
+    def __init__(self, db='notes_db', note=None):
         self.conn = sqlite3.connect(db)
         self.c = self.conn.cursor()
         self.note = note
       
     def add(self):
         with self.conn:
-            self.c.execute(f"INSERT INTO Notes VALUES ({self.note.id},'{self.note.title}', '{self.note.text}', '{self.note.time_stamp}')")
+            # self.c.execute(f"INSERT INTO Notes VALUES ({self.note.id},'{self.note.title}', '{self.note.text}', '{self.note.time_stamp}')")
+            self.c.execute("INSERT INTO Notes VALUES (?, ?, ?, ?)", 
+                           (self.note.id, self.note.title, self.note.text, self.note.time_stamp))
 
     def remove(self,id):
         with self.conn:
-            self.c.execute(f"DELETE FROM Notes WHERE id='{id}'")
+            # self.c.execute("DELETE FROM Notes WHERE id=?", (id))
+            self.c.execute("DELETE FROM Notes WHERE id=?", (id,))
 
     def edit(self):
         pass
@@ -43,6 +46,7 @@ class DBManager:
         self.c.execute(f"SELECT * FROM Notes")
         return self.c.fetchall()
     
+DBManager().remove(1)
 
-for i in DBManager('notes_db').get():
-    print(i)
+# Note(10, "Aymil Amjad", "Jaja askdfjlaskdjfk").save()
+# print(DBManager().get())
