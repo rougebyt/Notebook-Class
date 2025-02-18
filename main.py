@@ -47,6 +47,3 @@ class DBManager:
         return self.c.fetchall()
     
 DBManager().remove(1)
-
-# Note(10, "Aymil Amjad", "Jaja askdfjlaskdjfk").save()
-# print(DBManager().get())
